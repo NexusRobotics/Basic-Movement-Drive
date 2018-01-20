@@ -2,8 +2,8 @@ package org.usfirst.frc.team5787.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-//import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.*;
 
 /**
@@ -16,11 +16,11 @@ import edu.wpi.first.wpilibj.*;
  * 
  */
 public class Robot extends IterativeRobot {
-	//final String tankTeleop = "Tank";
-	//final String arcadeTeleop = "Arcade";
-	//String teleopSelected;
-	//SendableChooser<String> chooser = new SendableChooser<>();
-	
+	final String tankTeleop = "Tank";
+	final String arcadeTeleop = "Arcade";
+	String teleopSelected;
+	SendableChooser<String> chooser = new SendableChooser<>();
+	public boolean arcademode = false;
 	DifferentialDrive drive;
 	Joystick leftstick;
 	XboxController xbox;
@@ -67,8 +67,8 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopInit() {
-		//teleopSelected = chooser.getSelected();
-		//System.out.println("Teleop selected: " + teleopSelected);
+		teleopSelected = chooser.getSelected();
+		System.out.println("Teleop selected: " + teleopSelected);
 	}
 
 	/**
@@ -84,15 +84,18 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
-		//switch (teleopSelected) {
-		//case arcadeTeleop:
-			//drive.arcadeDrive(xbox.getY(GenericHID.Hand.kLeft)*0.3D, xbox.getX(GenericHID.Hand.kLeft),false);
-			//break;
-		//case tankTeleop:
-		//default:
+		if (xbox.getYButtonPressed()) {
+			if (arcademode)
+				arcademode = false;
+			else if (!arcademode)
+				arcademode = true;
+		}
+			
+		
+		if (arcademode)
+			drive.arcadeDrive(xbox.getY(GenericHID.Hand.kLeft)*0.3D, xbox.getX(GenericHID.Hand.kLeft)*0.35D,false);
+		else
 			drive.tankDrive(xbox.getY(GenericHID.Hand.kLeft)*0.3D, xbox.getY(GenericHID.Hand.kRight)*0.3D,false);
-			//break;
-		//}
 	}
 
 	/**
@@ -102,4 +105,3 @@ public class Robot extends IterativeRobot {
 	public void testPeriodic() {
 	}
 }
-
