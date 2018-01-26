@@ -1,5 +1,7 @@
 package org.usfirst.frc.team5787.robot.basicmovementdrive;
 
+import java.util.ArrayList;
+
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.GenericHID.Hand;
@@ -39,7 +41,7 @@ public class MovementDrive extends IterativeRobot implements PIDOutput{
     static final double kF = 0.00;
     
     static final double kToleranceDegrees = 2.0f;
-
+    private RobotController autoController;
 	@Override
 	public void robotInit() {
 		left = new SpeedControllerGroup(new Spark(0), new Spark(1));
@@ -62,7 +64,7 @@ public class MovementDrive extends IterativeRobot implements PIDOutput{
         turnController.setContinuous(true);
         
         
-        
+        autoController = new RobotController(m_myRobot, new ArrayList<RobotController.Task>(), ahrs);
 	}
 
 	@Override
@@ -87,11 +89,7 @@ public class MovementDrive extends IterativeRobot implements PIDOutput{
 	
 	public void autonomousPeriodic() { //This method is called each time the robot recieves a packet instructing the robot to be in autonomous enabled mode
 	     // Drive for 2 seconds
-	     if (timer.get() < 2.0) {
-	          m_myRobot.tankDrive(0.3, 0.3); // drive forwards half speed
-	     } else {
-	          m_myRobot.tankDrive(0.0, 0.0); // stop robot
-	     }
+		autoController.update();
 	}
 
 	@Override

@@ -10,6 +10,11 @@ public class RobotController {
 	public enum TaskType{
 		MOVE, MOVE_TO, ROTATE_L, ROTATE_R, PICKUP, PLACE
 	};
+	public RobotController(DifferentialDrive drive, ArrayList<Task> taskQueue, AHRS ahrs) {
+		this.drive = drive;
+		this.taskQueue = taskQueue;
+		this.ahrs = ahrs;
+	}
 	public DifferentialDrive drive;
 	public float taskProgress = 0;
 	public float prevValue;
@@ -20,6 +25,7 @@ public class RobotController {
 			drive.tankDrive(0, 0);
 			taskQueue.remove(0);
 			taskProgress = taskQueue.get(0).amount;
+			
 		}
 		Task task = taskQueue.get(0);
 		if (task.type == TaskType.MOVE) {
