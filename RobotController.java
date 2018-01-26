@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 public class RobotController {
 	public enum TaskType{
-		MOVE, ROTATE_L, ROTATE_R, PICKUP, PLACE
+		MOVE, MOVE_TO, ROTATE_L, ROTATE_R, PICKUP, PLACE
 	};
 	public DifferentialDrive drive;
 	public float taskProgress = 0;
@@ -24,8 +24,8 @@ public class RobotController {
 		Task task = taskQueue.get(0);
 		if (task.type == TaskType.MOVE) {
 			drive.tankDrive(0.3, 0.3);
-			taskProgress -= Math.abs(prevValue - getSensorProximity());
-			prevValue = getSensorProximity();
+			taskProgress -= Math.abs(prevValue - Math.sqrt(Math.pow(ahrs.getDisplacementX(), 2) + Math.pow(ahrs.getDisplacementZ(), 2)));
+			prevValue = (float)Math.sqrt(Math.pow(ahrs.getDisplacementX(), 2) + Math.pow(ahrs.getDisplacementZ(), 2));
 		}
 		else if (task.type == TaskType.ROTATE_L) {
 			drive.tankDrive(-0.3, 0.3);
@@ -36,6 +36,10 @@ public class RobotController {
 			drive.tankDrive(0.3, -0.3);
 			taskProgress -= Math.abs(prevValue - ahrs.getYaw());
 			prevValue = ahrs.getYaw();
+		}
+		else if (task.type == TaskType.MOVE_TO) {
+			drive.tankDrive(0.3, 0.3);
+			taskProgress = getSensorProximity() - task.amount;
 		}
 	}
 	public int getSensorProximity() {
